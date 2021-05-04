@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/Inciedncia_1.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-32.245348977383614,-45.99977038821587],[-16.62633647760661,-21.700302986146447]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
+        function pop_Inciedncia_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Ponto</strong><br />' + (feature.properties['Ponto'] !== null ? autolinker.link(feature.properties['Ponto'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Especie</strong><br />' + (feature.properties['Especie'] !== null ? autolinker.link(feature.properties['Especie'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>UF</strong><br />' + (feature.properties['UF'] !== null ? autolinker.link(feature.properties['UF'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Latitude_y</strong><br />' + (feature.properties['Latitude_y'] !== null ? autolinker.link(feature.properties['Latitude_y'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Longitude_</strong><br />' + (feature.properties['Longitude_'] !== null ? autolinker.link(feature.properties['Longitude_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>RMA</strong><br />' + (feature.properties['RMA'] !== null ? autolinker.link(feature.properties['RMA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>MA</strong><br />' + (feature.properties['MA'] !== null ? autolinker.link(feature.properties['MA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>RGQ</strong><br />' + (feature.properties['RGQ'] !== null ? autolinker.link(feature.properties['RGQ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>GQ</strong><br />' + (feature.properties['GQ'] !== null ? autolinker.link(feature.properties['GQ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>RH</strong><br />' + (feature.properties['RH'] !== null ? autolinker.link(feature.properties['RH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Herbicidas</strong><br />' + (feature.properties['Herbicidas'] !== null ? autolinker.link(feature.properties['Herbicidas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Inciedncia_1_0() {
+            return {
+                pane: 'pane_Inciedncia_1',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/blue-marker.svg',
+            iconSize: [28.120000000000015, 28.120000000000015]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Inciedncia_1');
+        map.getPane('pane_Inciedncia_1').style.zIndex = 401;
+        map.getPane('pane_Inciedncia_1').style['mix-blend-mode'] = 'normal';
+        var layer_Inciedncia_1 = new L.geoJson(json_Inciedncia_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Inciedncia_1',
+            layerName: 'layer_Inciedncia_1',
+            pane: 'pane_Inciedncia_1',
+            onEachFeature: pop_Inciedncia_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Inciedncia_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Inciedncia_1);
+        map.addLayer(layer_Inciedncia_1);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Inciedncia_1.png" /> Inciedência': layer_Inciedncia_1,"OSM Standard": layer_OSMStandard_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"UF": "str","Especie": "str","RMA": "str","RGQ": "str","RH": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_UF = document.createElement('div');
+            div_UF.id = "div_UF";
+            div_UF.className= "filterselect";
+            document.getElementById("menu").appendChild(div_UF);
+            sel_UF = document.createElement('select');
+            sel_UF.multiple = true;
+            sel_UF.size = 10;
+            sel_UF.id = "sel_UF";
+            var UF_options_str = "<option value='' unselected></option>";
+            sel_UF.onchange = function(){filterFunc()};
+            UF_options_str  += '<option value="AL">AL</option>';
+            UF_options_str  += '<option value="BA">BA</option>';
+            UF_options_str  += '<option value="CE">CE</option>';
+            UF_options_str  += '<option value="GO">GO</option>';
+            UF_options_str  += '<option value="MG">MG</option>';
+            UF_options_str  += '<option value="MS">MS</option>';
+            UF_options_str  += '<option value="MT">MT</option>';
+            UF_options_str  += '<option value="PR">PR</option>';
+            UF_options_str  += '<option value="RN">RN</option>';
+            UF_options_str  += '<option value="RS">RS</option>';
+            UF_options_str  += '<option value="SC">SC</option>';
+            UF_options_str  += '<option value="SP">SP</option>';
+            UF_options_str  += '<option value="Sem Info">Sem Info</option>';
+            sel_UF.innerHTML = UF_options_str;
+            div_UF.appendChild(sel_UF);
+            var lab_UF = document.createElement('div');
+            lab_UF.innerHTML = 'UF';
+            lab_UF.className = 'filterlabel';
+            div_UF.appendChild(lab_UF);
+            var reset_UF = document.createElement('div');
+            reset_UF.innerHTML = 'clear filter';
+            reset_UF.className = 'filterlabel';
+            reset_UF.onclick = function() {
+                var options = document.getElementById("sel_UF").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_UF.appendChild(reset_UF);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Especie = document.createElement('div');
+            div_Especie.id = "div_Especie";
+            div_Especie.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Especie);
+            sel_Especie = document.createElement('select');
+            sel_Especie.multiple = true;
+            sel_Especie.size = 10;
+            sel_Especie.id = "sel_Especie";
+            var Especie_options_str = "<option value='' unselected></option>";
+            sel_Especie.onchange = function(){filterFunc()};
+            Especie_options_str  += '<option value="Ageratum conyzoides">Ageratum conyzoides</option>';
+            Especie_options_str  += '<option value="Agrostis spp">Agrostis spp</option>';
+            Especie_options_str  += '<option value="Alternanthera tenella">Alternanthera tenella</option>';
+            Especie_options_str  += '<option value="Amaranthus deflexus">Amaranthus deflexus</option>';
+            Especie_options_str  += '<option value="Amaranthus hybridus">Amaranthus hybridus</option>';
+            Especie_options_str  += '<option value="Amaranthus lividus">Amaranthus lividus</option>';
+            Especie_options_str  += '<option value="Amaranthus palmeri">Amaranthus palmeri</option>';
+            Especie_options_str  += '<option value="Amaranthus retroflexus">Amaranthus retroflexus</option>';
+            Especie_options_str  += '<option value="Amaranthus spinosus">Amaranthus spinosus</option>';
+            Especie_options_str  += '<option value="Amaranthus spp">Amaranthus spp</option>';
+            Especie_options_str  += '<option value="Amaranthus viridis">Amaranthus viridis</option>';
+            Especie_options_str  += '<option value="Avena fatua">Avena fatua</option>';
+            Especie_options_str  += '<option value="Bidens pilosa">Bidens pilosa</option>';
+            Especie_options_str  += '<option value="Bidens spp">Bidens spp</option>';
+            Especie_options_str  += '<option value="Bidens subalternans">Bidens subalternans</option>';
+            Especie_options_str  += '<option value="Brachiaria brizantha">Brachiaria brizantha</option>';
+            Especie_options_str  += '<option value="Brachiaria decumbens">Brachiaria decumbens</option>';
+            Especie_options_str  += '<option value="Brachiaria plantaginea">Brachiaria plantaginea</option>';
+            Especie_options_str  += '<option value="Brachiaria ruziziensis">Brachiaria ruziziensis</option>';
+            Especie_options_str  += '<option value="Cenchrus echinatus">Cenchrus echinatus</option>';
+            Especie_options_str  += '<option value="Chamaesyce hirta">Chamaesyce hirta</option>';
+            Especie_options_str  += '<option value="Chloris polydactyla">Chloris polydactyla</option>';
+            Especie_options_str  += '<option value="Cleome affinis">Cleome affinis</option>';
+            Especie_options_str  += '<option value="Commelina benghalensis">Commelina benghalensis</option>';
+            Especie_options_str  += '<option value="Commelina diffusa">Commelina diffusa</option>';
+            Especie_options_str  += '<option value="Commelina erecta">Commelina erecta</option>';
+            Especie_options_str  += '<option value="Commelina villosa">Commelina villosa</option>';
+            Especie_options_str  += '<option value="Conyza blakei">Conyza blakei</option>';
+            Especie_options_str  += '<option value="Conyza bonariensis">Conyza bonariensis</option>';
+            Especie_options_str  += '<option value="Conyza canadensis">Conyza canadensis</option>';
+            Especie_options_str  += '<option value="Conyza spp">Conyza spp</option>';
+            Especie_options_str  += '<option value="Conyza summatrensis">Conyza summatrensis</option>';
+            Especie_options_str  += '<option value="Cynodon dactylon">Cynodon dactylon</option>';
+            Especie_options_str  += '<option value="Cyperus difformis">Cyperus difformis</option>';
+            Especie_options_str  += '<option value="Cyperus iria">Cyperus iria</option>';
+            Especie_options_str  += '<option value="Cyperus rotundus">Cyperus rotundus</option>';
+            Especie_options_str  += '<option value="Digitaria bicornis">Digitaria bicornis</option>';
+            Especie_options_str  += '<option value="Digitaria ciliaris">Digitaria ciliaris</option>';
+            Especie_options_str  += '<option value="Digitaria horizontalis">Digitaria horizontalis</option>';
+            Especie_options_str  += '<option value="Digitaria insularis">Digitaria insularis</option>';
+            Especie_options_str  += '<option value="Eleusine indica">Eleusine indica</option>';
+            Especie_options_str  += '<option value="Emilia sonchifolia">Emilia sonchifolia</option>';
+            Especie_options_str  += '<option value="Euphorbia heterophylla">Euphorbia heterophylla</option>';
+            Especie_options_str  += '<option value="Euphorbia hirta">Euphorbia hirta</option>';
+            Especie_options_str  += '<option value="Euphorbia hyssopifolia">Euphorbia hyssopifolia</option>';
+            Especie_options_str  += '<option value="Fimbristylis miliacea">Fimbristylis miliacea</option>';
+            Especie_options_str  += '<option value="Galinsoga parviflora">Galinsoga parviflora</option>';
+            Especie_options_str  += '<option value="Ipomoea grandifolia">Ipomoea grandifolia</option>';
+            Especie_options_str  += '<option value="Ipomoea hederifolia">Ipomoea hederifolia</option>';
+            Especie_options_str  += '<option value="Ipomoea nil">Ipomoea nil</option>';
+            Especie_options_str  += '<option value="Ipomoea purpurea">Ipomoea purpurea</option>';
+            Especie_options_str  += '<option value="Ipomoea quamoclit">Ipomoea quamoclit</option>';
+            Especie_options_str  += '<option value="Ipomoea spp">Ipomoea spp</option>';
+            Especie_options_str  += '<option value="Ipomoea triloba">Ipomoea triloba</option>';
+            Especie_options_str  += '<option value="Leptochloa filiforms">Leptochloa filiforms</option>';
+            Especie_options_str  += '<option value="Lolium multiflorum">Lolium multiflorum</option>';
+            Especie_options_str  += '<option value="Luffa aegyptiana">Luffa aegyptiana</option>';
+            Especie_options_str  += '<option value="Macroptilium lathyroides">Macroptilium lathyroides</option>';
+            Especie_options_str  += '<option value="Malvastrum coromandelianum">Malvastrum coromandelianum</option>';
+            Especie_options_str  += '<option value="Merremia aegyptia">Merremia aegyptia</option>';
+            Especie_options_str  += '<option value="Merremia cissoides">Merremia cissoides</option>';
+            Especie_options_str  += '<option value="Mucuna aterrima">Mucuna aterrima</option>';
+            Especie_options_str  += '<option value="Neonotonia wightii">Neonotonia wightii</option>';
+            Especie_options_str  += '<option value="Oryza  sativa">Oryza  sativa</option>';
+            Especie_options_str  += '<option value="Panicum maximum">Panicum maximum</option>';
+            Especie_options_str  += '<option value="Parthenium hysterophorus">Parthenium hysterophorus</option>';
+            Especie_options_str  += '<option value="Paspalum virgatum">Paspalum virgatum</option>';
+            Especie_options_str  += '<option value="Polygonum convolvulus">Polygonum convolvulus</option>';
+            Especie_options_str  += '<option value="Raphanus raphanistrum">Raphanus raphanistrum</option>';
+            Especie_options_str  += '<option value="Richardia brasiliensis">Richardia brasiliensis</option>';
+            Especie_options_str  += '<option value="Ricinus communis">Ricinus communis</option>';
+            Especie_options_str  += '<option value="Rottboelia exaltata L.f.">Rottboelia exaltata L.f.</option>';
+            Especie_options_str  += '<option value="Sagittaria montevidensis">Sagittaria montevidensis</option>';
+            Especie_options_str  += '<option value="Schefflera glaziovii">Schefflera glaziovii</option>';
+            Especie_options_str  += '<option value="Sem Info">Sem Info</option>';
+            Especie_options_str  += '<option value="Senna obtusifolia">Senna obtusifolia</option>';
+            Especie_options_str  += '<option value="Sisyrinchium micranthum Cav.">Sisyrinchium micranthum Cav.</option>';
+            Especie_options_str  += '<option value="Spermacoce latifolia">Spermacoce latifolia</option>';
+            Especie_options_str  += '<option value="Stizolobium aterrimum">Stizolobium aterrimum</option>';
+            Especie_options_str  += '<option value="Talinum paniculatum">Talinum paniculatum</option>';
+            Especie_options_str  += '<option value="Tecoma stans">Tecoma stans</option>';
+            Especie_options_str  += '<option value="Trianthema portulacastrum">Trianthema portulacastrum</option>';
+            Especie_options_str  += '<option value="Tridax procumbens">Tridax procumbens</option>';
+            Especie_options_str  += '<option value="Urochloa brizantha cv">Urochloa brizantha cv</option>';
+            Especie_options_str  += '<option value="Urochloa decumbens">Urochloa decumbens</option>';
+            Especie_options_str  += '<option value="Urochloa plantaginea">Urochloa plantaginea</option>';
+            Especie_options_str  += '<option value="Urochloa ruziziensis">Urochloa ruziziensis</option>';
+            sel_Especie.innerHTML = Especie_options_str;
+            div_Especie.appendChild(sel_Especie);
+            var lab_Especie = document.createElement('div');
+            lab_Especie.innerHTML = 'Especie';
+            lab_Especie.className = 'filterlabel';
+            div_Especie.appendChild(lab_Especie);
+            var reset_Especie = document.createElement('div');
+            reset_Especie.innerHTML = 'clear filter';
+            reset_Especie.className = 'filterlabel';
+            reset_Especie.onclick = function() {
+                var options = document.getElementById("sel_Especie").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Especie.appendChild(reset_Especie);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RMA = document.createElement('div');
+            div_RMA.id = "div_RMA";
+            div_RMA.className= "filterselect";
+            document.getElementById("menu").appendChild(div_RMA);
+            sel_RMA = document.createElement('select');
+            sel_RMA.multiple = true;
+            sel_RMA.size = 3;
+            sel_RMA.id = "sel_RMA";
+            var RMA_options_str = "<option value='' unselected></option>";
+            sel_RMA.onchange = function(){filterFunc()};
+            RMA_options_str  += '<option value="Resistencia Multipla">Resistencia Multipla</option>';
+            RMA_options_str  += '<option value="Resistencia Simples">Resistencia Simples</option>';
+            RMA_options_str  += '<option value="Susceptivel">Susceptivel</option>';
+            sel_RMA.innerHTML = RMA_options_str;
+            div_RMA.appendChild(sel_RMA);
+            var lab_RMA = document.createElement('div');
+            lab_RMA.innerHTML = 'RMA';
+            lab_RMA.className = 'filterlabel';
+            div_RMA.appendChild(lab_RMA);
+            var reset_RMA = document.createElement('div');
+            reset_RMA.innerHTML = 'clear filter';
+            reset_RMA.className = 'filterlabel';
+            reset_RMA.onclick = function() {
+                var options = document.getElementById("sel_RMA").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_RMA.appendChild(reset_RMA);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RGQ = document.createElement('div');
+            div_RGQ.id = "div_RGQ";
+            div_RGQ.className= "filterselect";
+            document.getElementById("menu").appendChild(div_RGQ);
+            sel_RGQ = document.createElement('select');
+            sel_RGQ.multiple = true;
+            sel_RGQ.size = 3;
+            sel_RGQ.id = "sel_RGQ";
+            var RGQ_options_str = "<option value='' unselected></option>";
+            sel_RGQ.onchange = function(){filterFunc()};
+            RGQ_options_str  += '<option value="Resistencia Multipla">Resistencia Multipla</option>';
+            RGQ_options_str  += '<option value="Resistencia Simples">Resistencia Simples</option>';
+            RGQ_options_str  += '<option value="Susceptivel">Susceptivel</option>';
+            sel_RGQ.innerHTML = RGQ_options_str;
+            div_RGQ.appendChild(sel_RGQ);
+            var lab_RGQ = document.createElement('div');
+            lab_RGQ.innerHTML = 'RGQ';
+            lab_RGQ.className = 'filterlabel';
+            div_RGQ.appendChild(lab_RGQ);
+            var reset_RGQ = document.createElement('div');
+            reset_RGQ.innerHTML = 'clear filter';
+            reset_RGQ.className = 'filterlabel';
+            reset_RGQ.onclick = function() {
+                var options = document.getElementById("sel_RGQ").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_RGQ.appendChild(reset_RGQ);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RH = document.createElement('div');
+            div_RH.id = "div_RH";
+            div_RH.className= "filterselect";
+            document.getElementById("menu").appendChild(div_RH);
+            sel_RH = document.createElement('select');
+            sel_RH.multiple = true;
+            sel_RH.size = 3;
+            sel_RH.id = "sel_RH";
+            var RH_options_str = "<option value='' unselected></option>";
+            sel_RH.onchange = function(){filterFunc()};
+            RH_options_str  += '<option value="Resistencia Multipla">Resistencia Multipla</option>';
+            RH_options_str  += '<option value="Resistencia Simples">Resistencia Simples</option>';
+            RH_options_str  += '<option value="Susceptivel">Susceptivel</option>';
+            sel_RH.innerHTML = RH_options_str;
+            div_RH.appendChild(sel_RH);
+            var lab_RH = document.createElement('div');
+            lab_RH.innerHTML = 'RH';
+            lab_RH.className = 'filterlabel';
+            div_RH.appendChild(lab_RH);
+            var reset_RH = document.createElement('div');
+            reset_RH.innerHTML = 'clear filter';
+            reset_RH.className = 'filterlabel';
+            reset_RH.onclick = function() {
+                var options = document.getElementById("sel_RH").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_RH.appendChild(reset_RH);
+        </script>
+    </body>
+</html>
